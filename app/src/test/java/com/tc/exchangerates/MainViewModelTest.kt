@@ -1,7 +1,7 @@
-package com.abcarrell.exchangerates
+package com.tc.exchangerates
 
-import com.abcarrell.exchangerates.component.RatesApi
-import com.abcarrell.exchangerates.viewmodel.MainViewModel
+import com.tc.exchangerates.component.RatesApi
+import com.tc.exchangerates.viewmodel.MainViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -9,14 +9,11 @@ import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.AfterClass
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.spy
 import pl.droidsonroids.testing.mockwebserver.FixtureDispatcher
 import pl.droidsonroids.testing.mockwebserver.condition.HTTPMethod
 import pl.droidsonroids.testing.mockwebserver.condition.PathQueryCondition

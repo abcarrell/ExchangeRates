@@ -1,4 +1,4 @@
-package com.abcarrell.exchangerates.model
+package com.tc.exchangerates.model
 
 data class ExchangeRate(
     val id: String,

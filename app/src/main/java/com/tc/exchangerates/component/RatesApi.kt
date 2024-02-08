@@ -1,6 +1,6 @@
-package com.abcarrell.exchangerates.component
+package com.tc.exchangerates.component
 
-import com.abcarrell.exchangerates.model.ExchangeRateResponse
+import com.tc.exchangerates.model.ExchangeRateResponse
 import retrofit2.Response
 import retrofit2.http.GET
 

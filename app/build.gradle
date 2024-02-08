@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace 'com.abcarrell.exchangerates'
+    namespace 'com.tc.exchangerates'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.abcarrell.exchangerates"
+        applicationId "com.tc.exchangerates"
         minSdk 26
         targetSdk 33
         versionCode 1

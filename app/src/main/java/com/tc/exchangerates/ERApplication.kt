@@ -1,4 +1,4 @@
-package com.abcarrell.exchangerates
+package com.tc.exchangerates
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

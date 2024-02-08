@@ -1,22 +1,22 @@
-package com.abcarrell.exchangerates.view
+package com.tc.exchangerates.view
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.abcarrell.exchangerates.R
-import com.abcarrell.exchangerates.databinding.ListItemExchangeRateBinding
-import com.abcarrell.exchangerates.model.ExchangeRate
+import com.tc.exchangerates.R
+import com.tc.exchangerates.databinding.ListItemExchangeRateBinding
+import com.tc.exchangerates.model.ExchangeRate
 
-class ExchangeRatesAdapter(
-    private val activity: MainActivity
-) : RecyclerView.Adapter<ExchangeRatesAdapter.ViewHolder>() {
+class ExchangeRatesAdapter : RecyclerView.Adapter<ExchangeRatesAdapter.ViewHolder>() {
     var ratesList: List<ExchangeRate> = emptyList()
+        set(value) {
+            notifyItemRangeRemoved(0, ratesList.size)
+            field = value
+            notifyItemRangeInserted(0, ratesList.size)
+        }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val binding = ListItemExchangeRateBinding.bind(view)
-
+    class ViewHolder(private val binding: ListItemExchangeRateBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(rateValue: ExchangeRate) {
             with(binding) {
                 currencySymbol.text = rateValue.currencySymbol
@@ -38,8 +38,8 @@ class ExchangeRatesAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ListItemExchangeRateBinding.inflate(LayoutInflater.from(activity), parent, false).run {
-            ViewHolder(root)
+        return ListItemExchangeRateBinding.inflate(LayoutInflater.from(parent.context), parent, false).run {
+            ViewHolder(this)
         }
     }
 

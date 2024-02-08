@@ -1,4 +1,4 @@
-package com.abcarrell.exchangerates
+package com.tc.exchangerates
 
 import org.junit.Test
 

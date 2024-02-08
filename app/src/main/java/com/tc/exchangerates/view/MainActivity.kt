@@ -1,4 +1,4 @@
-package com.abcarrell.exchangerates.view
+package com.tc.exchangerates.view
 
 import android.os.Bundle
 import android.view.View
@@ -10,10 +10,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.abcarrell.exchangerates.databinding.ActivityMainBinding
-import com.abcarrell.exchangerates.viewmodel.MainEvent
-import com.abcarrell.exchangerates.viewmodel.MainViewModel
-import com.abcarrell.exchangerates.viewmodel.UIEffect
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.tc.exchangerates.databinding.ActivityMainBinding
+import com.tc.exchangerates.viewmodel.MainEvent
+import com.tc.exchangerates.viewmodel.MainViewModel
+import com.tc.exchangerates.viewmodel.UIEffect
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -22,21 +23,27 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
 
-    private lateinit var ratesAdapter: ExchangeRatesAdapter
+    private val ratesAdapter: ExchangeRatesAdapter by lazy {
+        ExchangeRatesAdapter()
+    }
+
+    private val layoutManager: LinearLayoutManager by lazy {
+        LinearLayoutManager(this)
+    }
+
+    private val itemDecoration: ItemDecoration by lazy {
+        DividerItemDecoration(this, layoutManager.orientation)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater, null, false)
         setContentView(binding.root)
 
-        ratesAdapter = ExchangeRatesAdapter(this)
-
-        with(binding) {
-            LinearLayoutManager(this@MainActivity).run {
-                ratesList.layoutManager = this
-                ratesList.addItemDecoration(DividerItemDecoration(this@MainActivity, this.orientation))
-            }
-            ratesList.adapter = ratesAdapter
+        with(binding.ratesList) {
+            this.layoutManager = this@MainActivity.layoutManager
+            addItemDecoration(itemDecoration)
+            adapter = ratesAdapter
         }
 
         lifecycleScope.launch {
@@ -50,12 +57,8 @@ class MainActivity : AppCompatActivity() {
                 launch {
                     viewModel.effects.collect { effect ->
                         when (effect) {
-                            is UIEffect.CompleteMessage -> {
-                                Toast.makeText(this@MainActivity, "Loading Complete", Toast.LENGTH_SHORT).show()
-                            }
-                            is UIEffect.ErrorMessage -> {
-                                Toast.makeText(this@MainActivity, "Error: ${effect.message}", Toast.LENGTH_SHORT).show()
-                            }
+                            is UIEffect.CompleteMessage -> showMessage("Loading Complete")
+                            is UIEffect.ErrorMessage -> showMessage("Error: ${effect.message}")
                         }
                     }
                 }
@@ -65,5 +68,9 @@ class MainActivity : AppCompatActivity() {
         binding.getRates.setOnClickListener {
             viewModel.postEvent(MainEvent.GetRates)
         }
+    }
+
+    private fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

@@ -1,6 +1,11 @@
-package com.abcarrell.exchangerates.component
+package com.tc.exchangerates.component
 
 import com.google.gson.Gson
+import com.tc.exchangerates.mvi.MVIActor
+import com.tc.exchangerates.mvi.mvi
+import com.tc.exchangerates.viewmodel.MainEvent
+import com.tc.exchangerates.viewmodel.MainUiState
+import com.tc.exchangerates.viewmodel.UIEffect
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
