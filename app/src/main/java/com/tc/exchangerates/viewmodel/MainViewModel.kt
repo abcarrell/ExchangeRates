@@ -2,14 +2,15 @@ package com.tc.exchangerates.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tc.exchangerates.component.RatesApi
+import com.tc.exchangerates.data.DataMapper
+import com.tc.exchangerates.data.RatesApi
 import com.tc.exchangerates.model.ExchangeRate
+import com.tc.exchangerates.model.ExchangeRateResponse
 import com.tc.exchangerates.mvi.MVI
 import com.tc.exchangerates.mvi.MVIActor
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
@@ -17,6 +18,7 @@ import javax.inject.Named
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val ratesApi: RatesApi,
+    private val dataMapper: ExchangeRateDataMapper,
     @Named("MainMVIActor") private val mvi: MVIActor<MainUiState, MainEvent, UIEffect>
 ) : ViewModel(), MVI<MainUiState, MainEvent, UIEffect> by mvi {
 
@@ -43,24 +45,25 @@ class MainViewModel @Inject constructor(
     private fun getRates() {
         viewModelScope.launch {
             mvi.setState { copy(loading = true, rates = emptyList()) }
-            withContext(Dispatchers.IO) {
-                try {
-                    val response = ratesApi.getAllRates()
-                    if (response.isSuccessful) {
-                        response.body()?.run {
-                            mvi.setState { copy(loading = false, rates = data.sortedBy { it.symbol }) }
-                        }
-                        mvi.setEffect { UIEffect.CompleteMessage }
-                    } else {
-                        throw IOException("${response.code()}: ${response.message()}")
+            ratesApi.getAllRates().mapToResult().run {
+                onSuccess { data ->
+                    mvi.setState {
+                        copy(
+                            loading = false,
+                            rates = data.sortedWith(compareByDescending<ExchangeRate> { it.type }.thenBy { it.symbol })
+                        )
                     }
-                } catch (e: Throwable) {
+                    mvi.setEffect { UIEffect.CompleteMessage }
+                }
+                onFailure { e ->
                     mvi.setState { copy(loading = false) }
                     mvi.setEffect { UIEffect.ErrorMessage(e.message ?: "Unknown Error") }
                 }
             }
         }
     }
+
+    private fun Response<ExchangeRateResponse>.mapToResult() = dataMapper(this)
 }
 
 data class MainUiState(
@@ -69,10 +72,10 @@ data class MainUiState(
 )
 
 sealed class MainEvent {
-    object GetRates : MainEvent()
+    data object GetRates : MainEvent()
 }
 
 sealed class UIEffect {
-    object CompleteMessage : UIEffect()
+    data object CompleteMessage : UIEffect()
     data class ErrorMessage(val message: String) : UIEffect()
 }

@@ -15,7 +15,7 @@ interface MVI<State, Event, Effect> {
     val state: StateFlow<State>
     val effects: Flow<Effect>
 
-    fun postEvent(event: Event)
+    fun onEvent(event: Event)
 }
 
 interface MVIActor<State, Event, Effect> : MVI<State, Event, Effect> {
@@ -50,7 +50,7 @@ class MVIDelegate<State, Event, Effect> internal constructor(
         _effects.trySend(effect())
     }
 
-    override fun postEvent(event: Event) {
+    override fun onEvent(event: Event) {
         _events.tryEmit(event)
     }
 }

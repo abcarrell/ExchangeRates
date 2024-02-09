@@ -1,6 +1,6 @@
 package com.tc.exchangerates
 
-import com.tc.exchangerates.component.RatesApi
+import com.tc.exchangerates.data.RatesApi
 import com.tc.exchangerates.viewmodel.MainViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.ExperimentalCoroutinesApi

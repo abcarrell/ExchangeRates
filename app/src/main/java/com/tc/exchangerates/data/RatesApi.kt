@@ -1,4 +1,4 @@
-package com.tc.exchangerates.component
+package com.tc.exchangerates.data
 
 import com.tc.exchangerates.model.ExchangeRateResponse
 import retrofit2.Response

@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_min="60dp"
-        android:textSize="48sp"
+        android:textSize="36sp"
         android:textColor="@color/white"
         tools:text="$"/>
 
